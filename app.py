@@ -2,15 +2,15 @@ import streamlit as st
 import urllib.parse
 
 st.title("AI Image Generator")
-st.write("Генерирайте изображения директно по ваше описание!")
+st.write("Свободен генератор на изображения без ограничения.")
 
-prompt = st.text_input("Въведете описание на изображението:", "animals in nature")
+prompt = st.text_input("Въведете какво да бъде изобразено:", "future city")
 
-if st.button("Генерирай изображение"):
+if st.button("Генерирай"):
     if prompt:
-        st.success(f"Генериране за: {prompt}")
+        st.success(f"Генериране: {prompt}")
         
-        # Кодираме текста директно в линка, за да няма зависимост от външни преводачи
+        # Директно кодиране на текста за максимална свобода и бързина
         encoded = urllib.parse.quote(prompt)
         image_url = f"https://image.pollinations.ai/prompt/{encoded}"
         
