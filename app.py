@@ -1,21 +1,26 @@
 import streamlit as st
 import urllib.parse
 
-st.title("AI Prompt & Idea Studio")
-st.write("Генерирайте ултра-реалистични описания за перфектни изображения без цензура.")
+st.markdown("<h2 style='text-align: center;'>AI Real Image Studio</h2>", unsafe_allow_html=True)
+st.write("Генерирайте и визуализирайте изображения директно тук.")
 
-user_input = st.text_input("Въведете какво искате да създадете (на български):", "кюфтета в чиния")
+prompt = st.text_input("Въведете описание на изображението:", "кюфтета в чиния")
 
-if st.button("Създай перфектен промпт"):
-    if user_input:
-        # Създаваме професионален фотореалистичен промпт
-        pro_prompt = f"Hyperrealistic photo of {user_input}, 8k resolution, photorealistic, highly detailed, professional studio lighting, cinematic shot, sharp focus"
+if st.button("Покажи изображението"):
+    if prompt:
+        st.success(f"Генериране за: {prompt}")
         
-        st.success("Готово! Копирайте този перфектен текст и го поставете в който и да е свободен AI генератор:")
-        st.code(pro_prompt, language="text")
+        # Създаваме перфектен линк с параметри за високо качество
+        encoded = urllib.parse.quote(f"{prompt}, hyperrealistic photography, 8k, detailed")
+        image_url = f"https://image.pollinations.ai/prompt/{encoded}?noshuffle=true"
         
-        # Директен линк към търсене за улеснение
-        encoded = urllib.parse.quote(pro_prompt)
-        st.markdown(f"🔗 [Отворете директно в свободен генератор](https://image.pollinations.ai/prompt/{encoded})")
+        # Показваме картинката директно чрез сигурен HTML контейнер
+        st.markdown(f'''
+            <div style="display: flex; justify-content: center;">
+                <img src="{image_url}" style="width: 100%; max-width: 600px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+            </div>
+        ''', unsafe_allow_html=True)
+        
+        st.info("💡 За да я запазите в телефона си: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
     else:
-        st.warning("Моля, въведете текст.")
+        st.warning("Моля, въведете описание.")
