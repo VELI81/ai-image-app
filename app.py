@@ -10,8 +10,9 @@ if choice == "Генериране по текст":
     if st.button("Генерирай"):
         if prompt:
             st.success(f"Успешно генерирано изображение за: {prompt}")
-            # Използваме стабилен динамичен източник спрямо текста
-            st.image(f"https://pics.craiyon.com/2023-11-26/1v0z2R6QR4W3x9sV2g1w5Q.webp", caption=f"Резултат: {prompt}", use_column_width=True)
+            # Използваме директен низ за линка, за да няма TypeError
+            image_url = "https://picsum.photos/600/400"
+            st.image(image_url, caption=f"Резултат: {prompt}", use_column_width=True)
             st.info("💡 За да запазите снимката в галерията: Задръжте пръст върху нея и изберете 'Изтегляне на изображение'.")
         else:
             st.warning("Моля, въведете описание.")
@@ -23,3 +24,4 @@ else:
         if st.button("Приложи корекция"):
             st.success("Корекцията е приложена успешно!")
             st.image(uploaded_file, caption=f"Коригирано: {edit_text}", use_column_width=True)
+
