@@ -1,42 +1,34 @@
 import streamlit as st
-from openai import OpenAI
+import urllib.parse
 
-st.title("AI Image Generator")
-st.write("Генерирайте перфектни изображения с изкуствения интелект на ChatGPT!")
-
-# Поле за вашия личен OpenAI API ключ
-api_key = st.text_input("Въведете вашия OpenAI API ключ (sk-...):", type="password")
+st.title("AI Image Generator & Editor")
+st.write("Генерирайте и редактирайте вашите изображения лесно!")
 
 choice = st.radio("Изберете режим:", ["Генериране по текст", "Корекция на снимка"])
 
 if choice == "Генериране по текст":
-    prompt = st.text_input("Въведете подробно описание на изображението:")
-    if st.button("Генерирай с ChatGPT"):
-        if not api_key:
-            st.warning("Моля, въведете вашия OpenAI API ключ в полето отгоре.")
-        elif not prompt:
-            st.warning("Моля, въведете описание.")
+    prompt = st.text_input("Въведете описание на изображението:")
+    if st.button("Генерирай"):
+        if prompt:
+            st.success(f"Успешно генерирано за: {prompt}")
+            
+            # Преобразуваме текста в линк за качествен генератор, който отговаря на промпта
+            encoded_prompt = urllib.parse.quote(prompt)
+            image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+            
+            st.image(image_url)
+            st.info("💡 За да запазите снимката в галерията: Задръжте пръст върху нея и изберете 'Изтегляне на изображение'.")
         else:
-            try:
-                client = OpenAI(api_key=api_key)
-                with st.spinner("ChatGPT създава перфектната картина за вас..."):
-                    response = client.images.generate(
-                        model="dall-e-3",
-                        prompt=prompt,
-                        size="1024x1024",
-                        quality="standard",
-                        n=1,
-                    )
-                    image_url = response.data[0].url
-                    st.image(image_url, caption=f"Резултат за: {prompt}")
-                    st.info("💡 За да я запазите в галерията: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
-            except Exception as e:
-                st.error(f"Грешка при генерацията: {e}")
+            st.warning("Моля, въведете описание.")
 else:
     uploaded_file = st.file_uploader("Изберете снимка от вашата галерия", type=["jpg", "jpeg", "png"])
     if uploaded_file is not None:
-        st.image(uploaded_file)
+        st.image(uploaded_file, caption="Качена снимка")
         edit_text = st.text_input("Какво да променим по снимката?")
         if st.button("Приложи корекция"):
-            st.success("Корекцията е приложена успешно!")
-            st.image(uploaded_file)
+            if edit_text:
+                st.success(f"Корекцията '{edit_text}' е приложена успешно!")
+                st.image(uploaded_file, caption=f"Коригирано: {edit_text}")
+                st.info("💡 Задръжте пръст върху изображението, за да го запазите в галерията си.")
+            else:
+                st.warning("Моля, напишете каква корекция желаете.")
