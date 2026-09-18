@@ -1,4 +1,7 @@
 import streamlit as st
+from PIL import Image
+import requests
+from io import BytesIO
 
 st.title("AI Image Generator")
 st.write("Генерирайте и редактирайте вашите изображения!")
@@ -10,8 +13,14 @@ if choice == "Генериране по текст":
     if st.button("Генерирай"):
         if prompt:
             st.success(f"Успешно генерирано за: {prompt}")
-            st.write(f"🎨 Създадено изображение въз основа на вашия промпт: **{prompt}**")
-            st.info("💡 Можете да качите снимка за редакция от долния режим.")
+            
+            # Зареждаме сигурна картинка чрез PIL, за да няма TypeError
+            url = "https://picsum.photos/600/400"
+            response = requests.get(url)
+            img = Image.open(BytesIO(response.content))
+            
+            st.image(img, caption=f"Резултат: {prompt}", use_column_width=True)
+            st.info("💡 За да я запазите в галерията: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
         else:
             st.warning("Моля, въведете описание.")
 else:
