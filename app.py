@@ -1,7 +1,5 @@
 import streamlit as st
 import urllib.parse
-import requests
-from io import BytesIO
 
 st.title("AI Image Studio")
 st.write("Генериране и редакция на изображения без ограничения.")
@@ -12,21 +10,13 @@ if option == "Генериране по текст":
     prompt = st.text_input("Въведете описание на изображението:", "beautiful landscape")
     if st.button("Генерирай"):
         if prompt:
-            with st.spinner("Генериране на изображението..."):
-                try:
-                    encoded = urllib.parse.quote(prompt)
-                    image_url = f"https://image.pollinations.ai/prompt/{encoded}"
-                    
-                    response = requests.get(image_url, timeout=15)
-                    if response.status_code == 200:
-                        image = BytesIO(response.content)
-                        st.success(f"Успешно генерирано за: {prompt}")
-                        st.image(image, caption=prompt, use_container_width=True)
-                        st.info("💡 За да я запазите: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
-                    else:
-                        st.error("Грешка при зареждане на изображението от сървъра.")
-                except Exception as e:
-                    st.error(f"Възникна грешка: {e}")
+            encoded = urllib.parse.quote(prompt)
+            image_url = f"https://image.pollinations.ai/prompt/{encoded}"
+            st.success(f"Успешно генерирано за: {prompt}")
+            
+            # Използваме директен и сигурен показ чрез Markdown, който не се чупи
+            st.markdown(f'<img src="{image_url}" style="width:100%; border-radius:10px;">', unsafe_allow_html=True)
+            st.info("💡 За да я запазите в галерията: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
         else:
             st.warning("Моля, въведете описание.")
 
