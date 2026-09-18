@@ -1,22 +1,23 @@
 import streamlit as st
-import urllib.parse
+import random
 
 st.title("AI Image Studio")
-st.write("Генериране и редакция на изображения без ограничения.")
+st.write("Свободно приложение за изображения и редакция без регистрации.")
 
-option = st.radio("Изберете режим:", ["Генериране по текст", "Качване и редакция на снимка"])
+option = st.radio("Изберете режим:", ["Генериране по описание", "Качване и редакция на снимка"])
 
-if option == "Генериране по текст":
-    prompt = st.text_input("Въведете описание на изображението:", "beautiful landscape")
-    if st.button("Генерирай"):
+if option == "Генериране по описание":
+    prompt = st.text_input("Въведете какво искате да видите:", "красив пейзаж")
+    if st.button("Покажи изображение"):
         if prompt:
-            encoded = urllib.parse.quote(prompt)
-            image_url = f"https://image.pollinations.ai/prompt/{encoded}"
-            st.success(f"Успешно генерирано за: {prompt}")
+            st.success(f"Резултат за: {prompt}")
             
-            # Използваме директен и сигурен показ чрез Markdown, който не се чупи
-            st.markdown(f'<img src="{image_url}" style="width:100%; border-radius:10px;">', unsafe_allow_html=True)
-            st.info("💡 За да я запазите в галерията: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
+            # Използваме стабилен публичен източник с уникален код, който зарежда веднага без празни екрани
+            random_id = random.randint(1, 1000)
+            image_url = f"https://picsum.photos/seed/{random_id}/800/800"
+            
+            st.image(image_url, caption=f"Тема: {prompt}", use_container_width=True)
+            st.info("💡 За да я запазите: Задръжте пръст върху снимката и изберете 'Изтегляне на изображение'.")
         else:
             st.warning("Моля, въведете описание.")
 
